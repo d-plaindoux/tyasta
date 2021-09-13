@@ -1,5 +1,9 @@
 module Simple
 
+// -------------------------------------------------------------------------------------
+// Monadic result
+// -------------------------------------------------------------------------------------
+
 let return = Inr
 
 let throwError = Inl
@@ -17,14 +21,14 @@ let ( >>= ) r f =
 let unless r f e = 
     r >>= (fun r -> if f r then return r else e)
 
+// -------------------------------------------------------------------------------------
+
 let constant b _ = b
 
 let rec lookup n c =
     match c with
-    | Nil -> 
-        None
-    | (m,i) :: l -> 
-        if m = n then Some i else lookup n l
+    | Nil        -> None
+    | (m,i) :: l -> if m = n then Some i else lookup n l
 
 let rec lengthInfer e =
     match e with
@@ -67,18 +71,17 @@ let rec typeInfer i g e =
     | Free x      ->
         (match lookup x g with
         | Some (HasType t) -> return t
-        | Some _ -> throwError "not a type"
-        | None -> throwError "unknown identifier")
+        | Some _           -> throwError "not a type"
+        | None             -> throwError "unknown identifier")
     | Apply e e'  ->
         typeInfer i g e >>= (function
         | Function t t' -> constant t' <$> typeCheck i g e' t
-        | _ -> throwError "illegal application")
+        | _             -> throwError "illegal application")
     
 and typeCheck i g e t =
     match e with
-    | Inferable e -> 
-        constant () <$> unless (typeInfer i g e) ((=) t) (throwError "type mismatch")
-    | Lambda e -> 
+    | Inferable e -> constant () <$> unless (typeInfer i g e) ((=) t) (throwError "type mismatch")
+    | Lambda e    -> 
         (match t with
         | Function t t' ->
             typeCheck (i + 1) ((Local i, HasType t) :: g) (substCheck 0 i e) t'
