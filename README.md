@@ -1,6 +1,6 @@
 # Tyasta: A journey with F*
 
-tyasta- Q. verb. to (put to the) test, *verify
+[tyasta- Q. verb. to (put to the) test, *verify](https://www.elfdict.com/w/verify?include_old=1)
 
 ## Source
 
