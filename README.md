@@ -1,4 +1,4 @@
-# Tyasta A journey with F*
+# Tyasta: A journey with F*
 
 tyasta- Q. verb. to (put to the) test, *verify
 
