@@ -83,10 +83,8 @@ and typeCheck i g e t =
     | Inferable e -> constant () <$> unless (typeInfer i g e) ((=) t) (throwError "type mismatch")
     | Lambda e    -> 
         (match t with
-        | Function t t' ->
-            typeCheck (i + 1) ((Local i, HasType t) :: g) (substCheck 0 i e) t'
-        | _ -> 
-            throwError "type mismatch")
+        | Function t t' -> typeCheck (i + 1) ((Local i, HasType t) :: g) (substCheck 0 i e) t'
+        | _             -> throwError "type mismatch")
 
 let typeInfer0 : context -> term infer -> result typeL = 
     typeInfer 0
