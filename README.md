@@ -75,9 +75,8 @@ val subst_constant :
 ```
 
 This lemma says: if we replace a bound expression - of size 1 - with a term of size 1 then the size of the initial term 
-and the size of the computed term are equals. In addition we specify the decreased term and finally we add explicit to 
-the STM solver the pattern `subst i r e` i.e. `[SMTPat (subst i r e)]` to be used when the termination proof should be 
-done.
+and the size of the computed term are equals. In addition we specify the decreased term and finally we explicit to the 
+STM solver the pattern `subst i r e` i.e. `[SMTPat (subst i r e)]` to be used when the termination proof should be done.
 
 Now we are ready to proof the termination !
 
@@ -98,6 +97,8 @@ and typeCheck i g e t =
         | _ -> 
             throwError "type mismatch")    
 ```
+
+QED.
 
 ### Evaluation and coinductive types
 
