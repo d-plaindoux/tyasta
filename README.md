@@ -86,7 +86,8 @@ let rec typeInfer i g = function
     
 and typeCheck i g e t =
     match e with
-    | Inferable e -> constant () <$> unless (typeInfer i g e) ((=) t) (throwError "type mismatch")
+    | Inferable e -> 
+        constant () <$> unless (typeInfer i g e) ((=) t) (throwError "type mismatch")
     | Lambda e    -> 
         (match t with
         | Function t t' -> 
