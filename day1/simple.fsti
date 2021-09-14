@@ -8,8 +8,8 @@ type result a : Type = either string a
 
 val return     : (#a:Type) -> a -> Tot (result a)
 val throwError : (#a:Type) -> string -> Tot (result a)
-val ( <$> )    : (#a:Type) -> (#b:Type) -> (a -> b) -> result a -> Tot (result b)
-val ( >>= )    : (#a:Type) -> (#b:Type) -> result a -> (a -> result b) -> Tot (result b)
+val (<$>)      : (#a:Type) -> (#b:Type) -> (a -> b) -> result a -> Tot (result b)
+val (>>=)      : (#a:Type) -> (#b:Type) -> result a -> (a -> result b) -> Tot (result b)
 val unless     : (#a:Type) -> result a -> (a -> bool) -> result a -> Tot (result a)
 
 // -------------------------------------------------------------------------------------
@@ -53,8 +53,8 @@ val lookup      : name -> context -> option info
 val lengthInfer : term infer -> nat
 val lengthCheck : term check -> nat
 
-val substInfer  : nat -> nat -> (e:term infer) -> Tot (s:(term infer){lengthInfer e = lengthInfer s}) (decreases %[e])
-val substCheck  : nat -> nat -> (e:term check) -> Tot (s:(term check){lengthCheck e = lengthCheck s}) (decreases %[e])
+val substInfer  : nat -> term infer -> (e:term infer) -> Tot (term infer) (decreases %[e])
+val substCheck  : nat -> term infer -> (e:term check) -> Tot (term check) (decreases %[e])
 
 val kindInfer   : context -> typeL -> kindL -> result unit 
 

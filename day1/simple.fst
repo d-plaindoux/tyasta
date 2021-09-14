@@ -8,12 +8,12 @@ let return = Inr
 
 let throwError = Inl
 
-let ( <$> ) f =
+let (<$>) f =
     function
     | Inl s -> throwError s
     | Inr a -> return (f a)
 
-let ( >>= ) r f =
+let (>>=) r f =
     match r with
     | Inl s -> throwError s
     | Inr a -> f a
@@ -45,7 +45,7 @@ and lengthCheck e =
 let rec substInfer i r e =
     match e with
     | Annoted e t -> Annoted (substCheck i r e) t
-    | Bound j     -> if i=j then Free (Local r) else Bound j
+    | Bound j     -> if i=j then r else Bound j
     | Free x      -> Free x
     | Apply e1 e2 -> Apply (substInfer i r e1) (substCheck i r e2)
 
@@ -53,6 +53,42 @@ and substCheck i r e =
     match e with 
     | Inferable e -> Inferable (substInfer i r e)
     | Lambda e    -> Lambda (substCheck (i + 1) r e)
+
+val substInfer_constant : 
+        i:nat -> 
+        r:(term infer){lengthInfer r = 1} ->
+        e:term infer ->
+        Lemma (ensures
+            (let e' = substInfer i r e in
+                 lengthInfer e' = lengthInfer e
+            )
+        )
+        (decreases e)
+
+val substCheck_constant : 
+        i:nat -> 
+        r:(term infer){lengthInfer r = 1} ->
+        e:term check ->
+        Lemma (ensures
+            (let e' = substCheck i r e in
+                 lengthCheck e' = lengthCheck e
+            )
+        )
+        (decreases e)
+        [SMTPat (substCheck i r e)]
+
+let rec substInfer_constant i r e = 
+    match e with
+    | Annoted e t -> substCheck_constant i r e
+    | Bound j     -> ()
+    | Free x      -> ()
+    | Apply e1 e2 -> substInfer_constant i r e1; 
+                     substCheck_constant i r e2
+
+and substCheck_constant i r e = 
+    match e with
+    | Inferable e -> substInfer_constant i r e
+    | Lambda e    -> substCheck_constant (i+1) r e
 
 let rec kindInfer g ty kd =
     match ty,kd with
@@ -83,7 +119,11 @@ and typeCheck i g e t =
     | Inferable e -> constant () <$> unless (typeInfer i g e) ((=) t) (throwError "type mismatch")
     | Lambda e    -> 
         (match t with
-        | Function t t' -> typeCheck (i + 1) ((Local i, HasType t) :: g) (substCheck 0 i e) t'
+        | Function t t' -> 
+            let r  = Free (Local i) in
+            assert (lengthInfer r = 1);
+            let e' = substCheck 0 r e in
+            typeCheck (i + 1) ((Local i, HasType t) :: g) e' t'
         | _             -> throwError "type mismatch")
 
 let typeInfer0 : context -> term infer -> result typeL = 
