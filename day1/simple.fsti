@@ -53,10 +53,11 @@ val lookup      : name -> context -> option info
 val lengthInfer : term infer -> nat
 val lengthCheck : term check -> nat
 
-val substInfer  : nat -> term infer -> (e:term infer) -> Tot (term infer) (decreases %[e])
-val substCheck  : nat -> term infer -> (e:term check) -> Tot (term check) (decreases %[e])
+val substInfer  : nat -> term infer -> (e:term infer) -> Tot (term infer) (decreases e)
+val substCheck  : nat -> term infer -> (e:term check) -> Tot (term check) (decreases e)
 
 val kindInfer   : context -> typeL -> kindL -> result unit 
 
-val typeInfer   : nat -> context -> (e:term infer) -> Tot (result typeL) (decreases %[lengthInfer e])
+val typeInfer   : nat -> context -> (e:term infer) -> Tot (result typeL) (decreases (lengthInfer e))
 val typeCheck   : nat -> context -> (e:term check) -> (t:typeL) -> Tot (result unit) (decreases %[lengthCheck e;t])
+val typeInfer0  : context -> term infer -> result typeL

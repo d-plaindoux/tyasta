@@ -126,5 +126,4 @@ and typeCheck i g e t =
             typeCheck (i + 1) ((Local i, HasType t) :: g) e' t'
         | _             -> throwError "type mismatch")
 
-let typeInfer0 : context -> term infer -> result typeL = 
-    typeInfer 0
+let typeInfer0 = typeInfer 0
