@@ -103,8 +103,8 @@ and typeCheck i g e t =
         | Function t t' -> 
             let r  = Free (Local i) in
             assert (length r = 1);
-            let e' = subst 0 r e in
-            typeCheck (i + 1) ((Local i, HasType t) :: g) e' t'
-        | _             -> throwError "type mismatch")
+            typeCheck (i + 1) ((Local i, HasType t) :: g) (subst 0 r e) t'
+        | _ -> 
+            throwError "type mismatch")
 
 let typeInfer0 = typeInfer 0
