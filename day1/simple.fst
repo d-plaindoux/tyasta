@@ -25,13 +25,11 @@ let unless r f e =
 
 let constant b _ = b
 
-let rec lookup n c =
-    match c with
+let rec lookup n = function
     | Nil        -> None
     | (m,i) :: l -> if m = n then Some i else lookup n l
 
-let rec length e =
-    match e with
+let rec length = function
     | Annoted e t -> 1 + length e
     | Bound j     -> 1
     | Free x      -> 1
@@ -39,8 +37,7 @@ let rec length e =
     | Inferable e -> 1 + length e
     | Lambda e    -> 1 + length e
 
-let rec subst i r e =
-    match e with
+let rec subst i r = function
     | Annoted e t -> Annoted (subst i r e) t
     | Bound j     -> if i=j then r else Bound j
     | Free x      -> Free x
@@ -61,8 +58,7 @@ val subst_constant :
         (decreases e)
         [SMTPat (subst i r e)]
 
-let rec subst_constant i r e = 
-    match e with
+let rec subst_constant i r = function 
     | Annoted e t -> subst_constant i r e
     | Bound j     -> ()
     | Free x      -> ()
@@ -72,7 +68,7 @@ let rec subst_constant i r e =
     | Lambda e    -> subst_constant (i+1) r e
 
 let rec kindInfer g ty kd =
-    match ty,kd with
+    match ty, kd with
     | TFree x, Star -> 
         (match lookup x g with 
         | Some (HasKind Star) -> return ()
@@ -81,8 +77,7 @@ let rec kindInfer g ty kd =
     | Function a b, Star -> 
         kindInfer g a Star >>= (fun _ -> kindInfer g b Star)
 
-let rec typeInfer i g e =
-    match e with
+let rec typeInfer i g = function
     | Annoted e t -> kindInfer g t Star >>= (fun _ -> constant t <$> typeCheck i g e t)
     | Bound i     -> throwError "Not a bound variable"
     | Free x      ->

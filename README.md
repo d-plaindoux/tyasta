@@ -32,9 +32,8 @@ type term : Type -> Type =
 Then we are able to a generalized `length` and `subst`.
 
 ```f*
-val length      : (#a:Type) -> term a -> nat
-let rec length e =
-    match e with
+val length : (#a:Type) -> term a -> nat
+let rec length = function
     | Annoted e t -> 1 + length e
     | Bound j     -> 1
     | Free x      -> 1
@@ -80,7 +79,7 @@ the STM solver with the pattern `subst i r e` i.e. `[SMTPat (subst i r e)]`.
 Now we are ready to proof the termination !
 
 ```f*
-let rec typeInfer i g e =
+let rec typeInfer i g = function
     ...
     
 and typeCheck i g e t =
@@ -90,7 +89,8 @@ and typeCheck i g e t =
         (match t with
         | Function t t' -> 
             let r  = Free (Local i) in
-            assert (length r = 1); (* This assert is used by the STM solver and then can apply the lemma *)
+            (* This assert is used by the STM solver in order to apply the lemma *)
+            assert (length r = 1); 
             typeCheck (i + 1) ((Local i, HasType t) :: g) (subst 0 r e) t'
         | _ -> 
             throwError "type mismatch")    
