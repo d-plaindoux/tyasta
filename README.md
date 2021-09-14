@@ -29,11 +29,11 @@ type term : Type -> Type =
     | Lambda    : term check -> term check
 ```
 
-Then we are able to a generalized `length` and `subst`.
+Then we are able to a generalized `size` and `subst`.
 
 ```f*
-val length : (#a:Type) -> term a -> nat
-let rec length = function
+val size : (#a:Type) -> term a -> nat
+let rec size = function
     | Annoted e t -> 1 + length e
     | Bound j     -> 1
     | Free x      -> 1
@@ -54,18 +54,18 @@ type↓ i G (Lam e) (Fun τ τ′)
   =type↓ (i+1) ((Local i,HasType τ):G) (subst↓ 0 (Free (Local i)) e) τ′
 ```
 The system is not able to check if the term `(subst↓ 0 (Free (Local i)) e)` decreases. This can be simply solved 
-using our metric dedicated to the term algebra: `lenght`. Thanks to this metric we can see the size of `Free (Local i)` and
+using our metric dedicated to the term algebra: `size`. Thanks to this metric we can see the size of `Free (Local i)` and
 `Bound _` are the same. So we can "easily" define a lemma in this case:
 
 ```f*
 val subst_constant : 
         #a:Type ->
         i:nat -> 
-        r:(term infer){length r = 1} ->
+        r:(term infer){size r = 1} ->
         e:term a ->
         Lemma (ensures
             (let e' = subst i r e in
-                 length e' = length e
+                 size e' = size e
             )
         )
         (decreases e)
@@ -91,7 +91,7 @@ and typeCheck i g e t =
         | Function t t' -> 
             let r  = Free (Local i) in
             (* This assert is used by the STM solver in order to apply the lemma *)
-            assert (length r = 1); 
+            assert (size r = 1); 
             typeCheck (i + 1) ((Local i, HasType t) :: g) (subst 0 r e) t'
         | _ -> 
             throwError "type mismatch")    
