@@ -27,6 +27,8 @@ type term : Type -> Type =
     | Apply     : term infer -> term check -> term infer
     | Inferable : term infer -> term check
     | Lambda    : term check -> term check
+    
+and typeL : Type = ...
 ```
 
 Then we are able to a generalized `size` and `subst`.
