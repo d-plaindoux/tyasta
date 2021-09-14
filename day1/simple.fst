@@ -30,65 +30,46 @@ let rec lookup n c =
     | Nil        -> None
     | (m,i) :: l -> if m = n then Some i else lookup n l
 
-let rec lengthInfer e =
+let rec length e =
     match e with
-    | Annoted e t -> 1 + lengthCheck e
+    | Annoted e t -> 1 + length e
     | Bound j     -> 1
     | Free x      -> 1
-    | Apply e1 e2 -> lengthInfer e1 + lengthCheck e2
+    | Apply e1 e2 -> length e1 + length e2
+    | Inferable e -> 1 + length e
+    | Lambda e    -> 1 + length e
 
-and lengthCheck e =
-    match e with 
-    | Inferable e -> 1 + lengthInfer e
-    | Lambda e    -> 1 + lengthCheck e
-
-let rec substInfer i r e =
+let rec subst i r e =
     match e with
-    | Annoted e t -> Annoted (substCheck i r e) t
+    | Annoted e t -> Annoted (subst i r e) t
     | Bound j     -> if i=j then r else Bound j
     | Free x      -> Free x
-    | Apply e1 e2 -> Apply (substInfer i r e1) (substCheck i r e2)
+    | Apply e1 e2 -> Apply (subst i r e1) (subst i r e2)
+    | Inferable e -> Inferable (subst i r e)
+    | Lambda e    -> Lambda (subst (i + 1) r e)
 
-and substCheck i r e =
-    match e with 
-    | Inferable e -> Inferable (substInfer i r e)
-    | Lambda e    -> Lambda (substCheck (i + 1) r e)
-
-val substInfer_constant : 
+val subst_constant : 
+        #a:Type ->
         i:nat -> 
-        r:(term infer){lengthInfer r = 1} ->
-        e:term infer ->
+        r:(term infer){length r = 1} ->
+        e:term a ->
         Lemma (ensures
-            (let e' = substInfer i r e in
-                 lengthInfer e' = lengthInfer e
+            (let e' = subst i r e in
+                 length e' = length e
             )
         )
         (decreases e)
+        [SMTPat (subst i r e)]
 
-val substCheck_constant : 
-        i:nat -> 
-        r:(term infer){lengthInfer r = 1} ->
-        e:term check ->
-        Lemma (ensures
-            (let e' = substCheck i r e in
-                 lengthCheck e' = lengthCheck e
-            )
-        )
-        (decreases e)
-        [SMTPat (substCheck i r e)]
-
-let rec substInfer_constant i r e = 
+let rec subst_constant i r e = 
     match e with
-    | Annoted e t -> substCheck_constant i r e
+    | Annoted e t -> subst_constant i r e
     | Bound j     -> ()
     | Free x      -> ()
-    | Apply e1 e2 -> substInfer_constant i r e1; 
-                     substCheck_constant i r e2
-
-and substCheck_constant i r e = 
-    match e with
-    | Inferable e -> substInfer_constant i r e
-    | Lambda e    -> substCheck_constant (i+1) r e
+    | Apply e1 e2 -> subst_constant i r e1; 
+                     subst_constant i r e2
+    | Inferable e -> subst_constant i r e
+    | Lambda e    -> subst_constant (i+1) r e
 
 let rec kindInfer g ty kd =
     match ty,kd with
@@ -121,8 +102,8 @@ and typeCheck i g e t =
         (match t with
         | Function t t' -> 
             let r  = Free (Local i) in
-            assert (lengthInfer r = 1);
-            let e' = substCheck 0 r e in
+            assert (length r = 1);
+            let e' = subst 0 r e in
             typeCheck (i + 1) ((Local i, HasType t) :: g) e' t'
         | _             -> throwError "type mismatch")
 
