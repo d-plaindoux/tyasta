@@ -78,7 +78,7 @@ This lemma says: if we replace a bound expression - of size 1 - with a term of s
 and the size of the computed term are equals. In addition we specify the decreased term and finally we explicit to the 
 STM solver the pattern `subst i r e` i.e. `[SMTPat (subst i r e)]` to be used when the termination proof should be done.
 
-Now we are ready to proof the termination !
+Now we are ready to prove the termination!
 
 ```f*
 let rec typeInfer i g = function
