@@ -54,7 +54,7 @@ type↓ i G (Lam e) (Fun τ τ′)
   =type↓ (i+1) ((Local i,HasType τ):G) (subst↓ 0 (Free (Local i)) e) τ′
 ```
 The system is not able to check if the term `(subst↓ 0 (Free (Local i)) e)` decreases. This can be simply solved 
-using our metric dedicated to the term algebra: `lenght`. Base on this metric we can see the size of `Free (Local i)` and
+using our metric dedicated to the term algebra: `lenght`. Thanks to this metric we can see the size of `Free (Local i)` and
 `Bound _` are the same. So we can "easily" define a lemma in this case:
 
 ```f*
