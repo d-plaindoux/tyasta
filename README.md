@@ -11,13 +11,13 @@
 ### Desiging the term algebra
 
 The first difference with the original design suggested in paper is the term algebra. I decide to do it using 
-a GADT instead of two separated ADT.
+a GADT instead of two separated ADTs.
 
 ```f*
 type infer : Type = 
     | Infer     : infer
 
-type check = 
+type check : Type = 
     | Check     : check
 
 type term : Type -> Type = 
