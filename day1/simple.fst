@@ -29,13 +29,13 @@ let rec lookup n = function
     | Nil        -> None
     | (m,i) :: l -> if m = n then Some i else lookup n l
 
-let rec length = function
-    | Annoted e t -> 1 + length e
+let rec size = function
+    | Annoted e t -> 1 + size e
     | Bound j     -> 1
     | Free x      -> 1
-    | Apply e1 e2 -> length e1 + length e2
-    | Inferable e -> 1 + length e
-    | Lambda e    -> 1 + length e
+    | Apply e1 e2 -> size e1 + size e2
+    | Inferable e -> 1 + size e
+    | Lambda e    -> 1 + size e
 
 let rec subst i r = function
     | Annoted e t -> Annoted (subst i r e) t
@@ -48,11 +48,11 @@ let rec subst i r = function
 val subst_constant : 
         #a:Type ->
         i:nat -> 
-        r:(term infer){length r = 1} ->
+        r:(term infer){size r = 1} ->
         e:term a ->
         Lemma (ensures
             (let e' = subst i r e in
-                 length e' = length e
+                 size e' = size e
             )
         )
         (decreases e)
@@ -97,7 +97,7 @@ and typeCheck i g e t =
         (match t with
         | Function t t' -> 
             let r  = Free (Local i) in
-            assert (length r = 1);
+            assert (size r = 1);
             typeCheck (i + 1) ((Local i, HasType t) :: g) (subst 0 r e) t'
         | _ -> 
             throwError "type mismatch")

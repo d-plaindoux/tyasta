@@ -20,7 +20,7 @@ type infer : Type =
 type check = 
     | Check     : check
 
-type term : Type -> Type = 
+type term       : Type -> Type = 
     | Annoted   : term check -> typeL -> term infer
     | Bound     : nat -> term infer
     | Free      : name -> term infer
@@ -28,34 +28,34 @@ type term : Type -> Type =
     | Inferable : term infer -> term check
     | Lambda    : term check -> term check
 
-and name : Type = 
+and name        : Type = 
     | Global    : string -> name
     | Local     : nat -> name
     | Quote     : nat -> name
 
-and typeL : Type = 
+and typeL       : Type = 
     | TFree     : name -> typeL
     | Function  : typeL -> typeL -> typeL
 
-type kindL : Type = 
+type kindL      : Type = 
     | Star      : kindL
 
-type info : Type =
+type info       : Type =
     | HasKind   : kindL -> info
     | HasType   : typeL -> info
 
-type context : Type = list (name * info)
+type context    : Type = list (name * info)
 
-val constant    : (#a:Type) -> (#b:Type) -> b -> a -> Tot b
+val constant    : (#a:Type) -> (#b :Type) -> b -> a -> Tot b
 
 val lookup      : name -> context -> option info
 
-val length      : (#a:Type) -> term a -> nat
+val size        : (#a:Type) -> term a -> nat
 
 val subst       : (#a:Type) -> nat -> term infer -> (e:term a) -> Tot (term a) (decreases e)
 
 val kindInfer   : context -> typeL -> kindL -> result unit 
 
-val typeInfer   : nat -> context -> (e:term infer) -> Tot (result typeL) (decreases (length e))
-val typeCheck   : nat -> context -> (e:term check) -> (t:typeL) -> Tot (result unit) (decreases %[length e;t])
+val typeInfer   : nat -> context -> (e:term infer) -> Tot (result typeL) (decreases (size e))
+val typeCheck   : nat -> context -> (e:term check) -> (t:typeL) -> Tot (result unit) (decreases %[size e;t])
 val typeInfer0  : context -> term infer -> result typeL
