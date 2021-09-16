@@ -108,7 +108,7 @@ variable i.e. unbound because De Bruijn indice does not corresponds to a level o
 enclosing lambda. Neverthless, with the current abstract syntax we can build terms like:
 
 ```f*
-let ex = Lambda (Bound 4)
+let ex = Lambda (Inferable (Bound 4))
 ```
 
 Then type checking such term leads to an error like "unbound term". In the paper we 
