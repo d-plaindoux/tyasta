@@ -2,6 +2,7 @@ module Checker
 
 open Try
 open Ast
+open Size
 
 type context    : Type = list (name * info)
 

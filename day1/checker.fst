@@ -3,6 +3,7 @@ module Checker
 open Utils
 open Try
 open Ast
+open Size
 
 val lookup : name -> context -> option info
 let rec lookup n = function
