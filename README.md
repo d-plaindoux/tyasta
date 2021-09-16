@@ -8,7 +8,7 @@
 
 ## Day 1: Simply Typed Lambda Calculus
 
-### Desiging the term algebra
+### 1am: Desiging the term algebra
 
 The first difference with the original design suggested in paper is the term algebra. I decide to do it using 
 a GADT instead of two separated ADTs.
@@ -46,7 +46,7 @@ let rec size = function
 
 The same design can be applied to the substitution function.
 
-### Type checker termination
+### 2am: Type checker termination
 
 During this first day the main problem I'm facing is the proof of `typeCheck` and `typeInfer` termination.
 This is actually normal when we take a closer look at the abstraction type verification code:
@@ -101,7 +101,26 @@ and typeCheck i g e t =
 
 QED.
 
-### Evaluation and coinductive types
+### 3am: Open and Closed terms
+
+In the general design, manipulated terms are closed. A closed term has no free 
+variable i.e. unbound because De Bruijn indice does not corresponds to a level of 
+enclosing lambda. Neverthless, with the current abstract syntax we can build terms like:
+
+```f*
+let ex = Lambda (Bound 4)
+```
+
+Then type checking such term leads to an error like "unbound term". In the paper we 
+can see that such case is missing as expressed page 1010: "The type checker will never 
+encounter a bound variable; correspondingly the function type↑ has no case for Bound".
+
+Well that's fine but in F* we cannot remove such pattern matching or we have to prove 
+that such case never occurs!
+
+To be continued ...
+
+### 4am: Evaluation and coinductive types
 
 To be continued ...
 

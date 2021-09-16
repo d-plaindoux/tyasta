@@ -1,30 +1,10 @@
-module Simple
+module Checker
 
-// -------------------------------------------------------------------------------------
-// Monadic result
-// -------------------------------------------------------------------------------------
+open Utils
+open Try
+open Ast
 
-let return = Inr
-
-let throwError = Inl
-
-let (<$>) f =
-    function
-    | Inl s -> throwError s
-    | Inr a -> return (f a)
-
-let (>>=) r f =
-    match r with
-    | Inl s -> throwError s
-    | Inr a -> f a
-
-let unless r f e = 
-    r >>= (fun r -> if f r then return r else e)
-
-// -------------------------------------------------------------------------------------
-
-let constant b _ = b
-
+val lookup : name -> context -> option info
 let rec lookup n = function
     | Nil        -> None
     | (m,i) :: l -> if m = n then Some i else lookup n l
@@ -37,6 +17,7 @@ let rec size = function
     | Inferable e -> 1 + size e
     | Lambda e    -> 1 + size e
 
+val subst : (#a:Type) -> nat -> term infer -> (e:term a) -> Tot (term a) (decreases e)
 let rec subst i r = function
     | Annoted e t -> Annoted (subst i r e) t
     | Bound j     -> if i=j then r else Bound j
@@ -67,19 +48,20 @@ let rec subst_constant i r = function
     | Inferable e -> subst_constant i r e
     | Lambda e    -> subst_constant (i+1) r e
 
+val kindInfer   : context -> typeL -> kindL -> result unit 
 let rec kindInfer g ty kd =
     match ty, kd with
     | TFree x, Star -> 
         (match lookup x g with 
         | Some (HasKind Star) -> return ()
-        | Some _              -> throwError "identifier is not a Star"
+        | Some _              -> throwError "type mismatch: not a Star"
         | None                -> throwError "unknown identifier")
     | Function a b, Star -> 
         kindInfer g a Star >>= (fun _ -> kindInfer g b Star)
 
 let rec typeInfer i g = function
     | Annoted e t -> kindInfer g t Star >>= (fun _ -> constant t <$> typeCheck i g e t)
-    | Bound i     -> throwError "Not a bound variable"
+    | Bound i     -> throwError "unbound variable"
     | Free x      ->
         (match lookup x g with
         | Some (HasType t) -> return t
