@@ -111,7 +111,7 @@ Neverthless, with the current abstract syntax we can build terms like:
 let ex = Lambda (Inferable (Bound 4))
 ```
 
-Then type checking such term leads to an error like "unbound term". In the paper we 
+Then type checking such term should leads to an unbound variable error. In the paper we 
 can see that such case is missing as expressed page 1010: "The type checker will never 
 encounter a bound variable; correspondingly the function type↑ has no case for Bound".
 
