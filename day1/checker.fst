@@ -3,7 +3,6 @@ module Checker
 open Utils
 open Try
 open Ast
-open Size
 
 val lookup : name -> context -> option info
 let rec lookup n = function
@@ -32,11 +31,7 @@ val subst_constant :
         i:nat -> 
         r:(term infer){size r = 1} ->
         e:term a ->
-        Lemma (ensures
-            (let e' = subst i r e in
-                 size e' = size e
-            )
-        )
+        Lemma (ensures (size (subst i r e) = size e))
         (decreases e)
         [SMTPat (subst i r e)]
 
