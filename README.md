@@ -104,8 +104,8 @@ QED.
 ### 3am: Open and Closed terms
 
 In the general design, manipulated terms are closed. A closed term has no free 
-variable i.e. unbound because De Bruijn indice does not corresponds to a level of 
-enclosing lambda. Neverthless, with the current abstract syntax we can build terms like:
+variable i.e. each De Bruijn indice corresponds to a level of enclosing lambda. 
+Neverthless, with the current abstract syntax we can build terms like:
 
 ```f*
 let ex = Lambda (Inferable (Bound 4))
