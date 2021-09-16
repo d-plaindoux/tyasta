@@ -104,14 +104,14 @@ QED.
 ### 3am: Open and Closed terms
 
 In the general design, manipulated terms are closed. A closed term has no free 
-variable i.e. unbound because De Bruijn indice does not corresponds to a level of 
-enclosing lambda. Neverthless, with the current abstract syntax we can build terms like:
+variable i.e. each De Bruijn indice corresponds to a level of enclosing lambda. 
+Neverthless, with the current abstract syntax we can build terms like:
 
 ```f*
-let ex = Lambda (Bound 4)
+let ex = Lambda (Inferable (Bound 4))
 ```
 
-Then type checking such term leads to an error like "unbound term". In the paper we 
+Then type checking such term should leads to an unbound variable error. In the paper we 
 can see that such case is missing as expressed page 1010: "The type checker will never 
 encounter a bound variable; correspondingly the function type↑ has no case for Bound".
 

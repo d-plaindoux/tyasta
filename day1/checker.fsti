@@ -6,7 +6,7 @@ open Size
 
 type context    : Type = list (name * info)
 
-val size : (#a:Type) -> term a -> nat
+val size        : (#a:Type) -> term a -> nat
 
 val typeInfer   : nat -> context -> (e:term infer) -> Tot (result typeL) (decreases (size e))
 val typeCheck   : nat -> context -> (e:term check) -> (t:typeL) -> Tot (result unit) (decreases %[size e;t])
