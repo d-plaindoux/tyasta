@@ -10,7 +10,7 @@
 
 ### 1am: Desiging the term algebra
 
-The first difference with the original design suggested in paper is the term algebra. I decide to do it using 
+The first difference with the original design suggested in the paper is the term algebra. I decide to do it using 
 a GADT instead of two separated ADTs.
 
 ```f*
