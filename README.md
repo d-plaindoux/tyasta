@@ -101,6 +101,8 @@ and typeCheck i g e t =
 
 QED.
 
+Note: The assert can be replaced by the application of the lemma via `subst_constant i r e`.
+
 ### 3am: Open and Closed terms
 
 In the general design, manipulated terms are closed. A closed term has no free 
