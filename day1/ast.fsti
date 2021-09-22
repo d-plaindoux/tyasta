@@ -29,3 +29,5 @@ type kindL      : Type =
 type info       : Type =
     | HasKind   : kindL -> info
     | HasType   : typeL -> info
+
+type context    : Type = list (name * info)

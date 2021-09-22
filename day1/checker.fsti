@@ -3,8 +3,6 @@ module Checker
 open Try
 open Ast
 
-type context    : Type = list (name * info)
-
 val size        : (#a:Type) -> term a -> nat
 
 val typeInfer   : nat -> context -> (e:term infer) -> Tot (result typeL) (decreases (size e))

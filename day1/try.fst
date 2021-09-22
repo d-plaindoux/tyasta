@@ -1,18 +1,27 @@
 module Try
 
-let return = Inr
+open Utils
 
-let throwError = Inl
+let return = Success
 
-let (<$>) f =
+let throwError = Failure
+
+let fold = 
     function
-    | Inl s -> throwError s
-    | Inr a -> return (f a)
+    | Success v -> fun s _ -> s v
+    | Failure v -> fun _ e -> e v
 
-let (>>=) r f =
-    match r with
-    | Inl s -> throwError s
-    | Inr a -> f a
+let (<$>) f r = 
+    fold r (return <% f) throwError
+
+let (<*>) f r =
+    fold f (flip (<$>) r) throwError
+
+let join r =
+    fold r id throwError
+
+let (>>=) r f = 
+    join (f <$> r)
 
 let unless r f e = 
-    r >>= (fun r -> if f r then return r else e)
+    r >>= (fun r -> if not (f r) then e else return r)
