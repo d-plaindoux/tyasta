@@ -120,7 +120,36 @@ encounter a bound variable; correspondingly the function type↑ has no case for
 Well that's fine but in F* we cannot remove such pattern matching or we have to prove 
 that such case never occurs!
 
-To be continued ...
+In order to solve this problem we should observe how the type checker works. Each `Bound`
+term is replaced by a `Free (Local i)`. Based on this we can define a function defining
+when a term is closed or not using the same technic e.g the substitution in order to 
+eliminate such `Bound` terms. 
+
+```f*
+val closed  : #a:Type -> nat -> e:term a -> Tot bool (decreases %[size e])
+
+let rec closed i = function
+    | Annoted e t -> closed i e
+    | Bound j     -> false
+    | Free x      -> true
+    | Apply e1 e2 -> closed i e1 && closed i e2
+    | Inferable e -> closed i e
+    | Lambda e    -> let r  = Free (Local i) in
+                     assert (size r = 1);
+                     closed (i+1) (subst 0 r e)
+```
+
+This `closed` predicate uses the same pattern when managing a `Lambda e` i.e. creates a 
+term for the substitution and eliminates the corresponding `Bound`. Then we can provide
+refined types in the type checker signatures using such predicate:
+
+```f*
+val typeInfer   : n:nat -> context -> e:(term infer){closed n e} -> Tot (result typeL) (decreases (size e))
+val typeCheck   : n:nat -> context -> e:(term check){closed n e} -> t:typeL -> Tot (result unit) (decreases %[size e;t])
+val typeInfer0  : context -> e:(term infer){closed 0 e} -> result typeL
+```
+
+Finally we can remove the pattern matching dedicated to `Bound` term because the term is `closed`.
 
 ### 4am: Evaluation and coinductive types
 

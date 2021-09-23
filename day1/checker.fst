@@ -44,6 +44,15 @@ let rec subst_constant i r = function
     | Inferable e -> subst_constant i r e
     | Lambda e    -> subst_constant (i+1) r e
 
+val free : (#a:Type) -> nat -> nat -> e:term a -> Tot bool (decreases e)
+let rec free i v = function 
+    | Annoted e t -> free i v e
+    | Bound j     -> not (j < i)
+    | Free x      -> false
+    | Apply e1 e2 -> free i v e1 || free i v e2
+    | Inferable e -> free i v e
+    | Lambda e    -> free (i + 1) v e
+
 val kindInfer   : context -> typeL -> kindL -> result unit 
 let rec kindInfer g ty kd =
     match ty, kd with
@@ -55,9 +64,19 @@ let rec kindInfer g ty kd =
     | Function a b, Star -> 
         kindInfer g a Star >>= (fun _ -> kindInfer g b Star)
 
+let rec closed i = function
+    | Annoted e t -> closed i e
+    | Bound j     -> false
+    | Free x      -> true
+    | Apply e1 e2 -> closed i e1 && closed i e2
+    | Inferable e -> closed i e
+    | Lambda e    -> let r  = Free (Local i) in
+                     assert (size r = 1);
+                     closed (i+1) (subst 0 r e)
+
 let rec typeInfer i g = function
-    | Annoted e t -> kindInfer g t Star >>= (fun _ -> constant t <$> typeCheck i g e t)
-    | Bound i     -> throwError "unbound variable"
+    | Annoted e t -> 
+        kindInfer g t Star >>= (fun _ -> constant t <$> typeCheck i g e t)
     | Free x      ->
         (match lookup x g with
         | Some (HasType t) -> return t
@@ -82,3 +101,5 @@ and typeCheck i g e t =
             throwError "type mismatch")
 
 let typeInfer0 = typeInfer 0
+
+    
