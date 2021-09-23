@@ -65,6 +65,11 @@ let rec closed i = function
                      assert (size r = 1);
                      closed (i+1) (subst 0 r e)
 
+let toClosed t =
+    if closed 0 t
+    then return t
+    else throwError "No a closed term"
+
 let rec typeInfer i g = function
     | Annoted e t -> 
         kindInfer g t Star >>= (fun _ -> constant t <$> typeCheck i g e t)
