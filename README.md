@@ -126,7 +126,7 @@ if a given term is closed or not using the same technic e.g the substitution in 
 eliminate such `Bound` terms. 
 
 ```f*
-val closed  : #a:Type -> nat -> e:term a -> Tot bool (decreases %[size e])
+val closed  : #a:Type -> nat -> e:term a -> Tot bool (decreases (size e))
 
 let rec closed i = function
     | Annoted e t -> closed i e
