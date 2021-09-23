@@ -139,8 +139,8 @@ let rec closed i = function
                      closed (i+1) (subst 0 r e)
 ```
 
-This `closed` predicate uses the same pattern when managing a `Lambda e` i.e. creates a 
-term for the substitution and eliminates the corresponding `Bound`. Then we can provide
+This `closed` predicate uses the same pattern when managing a `Lambda e` i.e. it creates 
+a term for the substitution and eliminates the corresponding `Bound`. Then we can provide
 refined types in the type checker signatures using such predicate:
 
 ```f*
