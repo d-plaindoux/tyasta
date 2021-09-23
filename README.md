@@ -92,7 +92,7 @@ and typeCheck i g e t =
         (match t with
         | Function t t' -> 
             let r  = Free (Local i) in
-            (* This assert is used by the STM solver in order to apply the lemma *)
+            (* This assert is used by the SMT solver in order to apply the lemma *)
             assert (size r = 1); 
             typeCheck (i + 1) ((Local i, HasType t) :: g) (subst 0 r e) t'
         | _ -> 
