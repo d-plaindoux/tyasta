@@ -121,8 +121,8 @@ Well that's fine but in F* we cannot remove such pattern matching or we have to 
 that such case never occurs!
 
 In order to solve this problem we should observe how the type checker works. Each `Bound`
-term is replaced by a `Free (Local i)`. Based on this we can define a function defining
-when a term is closed or not using the same technic e.g the substitution in order to 
+term is replaced by a `Free (Local i)`. Based on this we can define a function deciding
+if a given term is closed or not using the same technic e.g the substitution in order to 
 eliminate such `Bound` terms. 
 
 ```f*
