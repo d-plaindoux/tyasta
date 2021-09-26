@@ -151,7 +151,60 @@ val typeInfer0  : context -> e:(term infer){closed 0 e} -> result typeL
 
 Finally we can remove the pattern matching dedicated to `Bound` term because the term is `closed`.
 
-### 4am: Evaluation and coinductive types
+### 4am: Coinductive types
+
+In the original paper, the evaluation of a given term produces a value:
+
+```haskell
+data Value 
+    = VLam (Value → Value)
+    | VNeutral Neutral
+
+data Neutral
+    = NFree Name
+    | NApp Neutral Value
+```
+
+Once again we can use a GADT instead of two ATDs.
+
+```fstar
+type value : Type =
+    | Value : value
+
+type neutral : Type =
+    | Neutral : neutral
+
+type vterm      : Type -> Type =
+    | VLamb     : (vterm value -> vterm value) -> vterm value
+    | VNeutral  : vterm neutral -> vterm value
+    | NFree     : name -> vterm neutral
+    | NApp      : vterm neutral -> vterm value -> vterm neutral
+```
+
+In this design `vterm` is no an inductive type but a coinductive one (cf. the constructor `VLamb`). If fact, the evaluation
+of a `Lamb` term is given by a reified function in the host langage:
+
+```haskell
+eval↓ (Lam e) d = VLam (λx → eval↓ e (x:d))
+```
+
+The function in `VLamb`, defers the evaluation of the inner term pushing the parameter on top of the captured environment.
+Unfortunately F* has no support for coinductive types in this case we must replace the `VLamb` construction by another one. 
+This can be done easily introducing the principle of closure which captures the inner element and the current environment.
+
+```fstar
+type vterm      : Type -> Type =
+    | VClosure  : term check -> env -> vterm value
+    | ...
+
+and env         : Type = list (vterm value)
+```
+
+### 5am: Evaluation and termination
+
+To be continued ...
+
+### 6am: Evaluation and finite state
 
 To be continued ...
 
