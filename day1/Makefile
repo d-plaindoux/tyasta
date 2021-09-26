@@ -8,7 +8,7 @@ specs: utils.fsti.checked try.fsti.checked ast.fsti.checked 		\
 	   checker.fsti.checked eval.fsti.checked
 
 impls: utils.fst.checked try.fst.checked 				  			\
-	   checker.fst.checked
+	   checker.fst.checked eval.fst.checked
 
 .fsti.fsti.checked: 
 	fstar.exe $< --cache_checked_modules 

@@ -9,8 +9,11 @@ type neutral : Type =
     | Neutral : neutral
 
 type vterm      : Type -> Type =
-    | VLam      : nat -> vterm value -> vterm value
+    | VClosure  : term check -> env -> vterm value
     | VNeutral  : vterm neutral -> vterm value
     | NFree     : name -> vterm neutral
     | NApp      : vterm neutral -> vterm value -> vterm neutral
 
+and env         : Type = list (vterm value)
+
+val eval : #a:Type -> e:term a -> env -> Dv (result (vterm value)) (decreases e)
