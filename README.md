@@ -202,7 +202,7 @@ and env         : Type = list (vterm value)
 
 To be continued ...
 
-### 6am: Evaluation and finite state
+### 6am: Evaluation and finite set
 
 To be continued ...
 
