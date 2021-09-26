@@ -1,5 +1,6 @@
 module Eval
 
+open Utils
 open Try
 open Ast
 
@@ -12,17 +13,16 @@ let rec get i env =
 
 val vapply : vterm value -> vterm value -> Dv (result (vterm value))
 
-let rec eval e d =
-    match e with
-    | Annoted e _ -> eval e d
-    | Bound j     -> get j d
-    | Free x      -> return (VNeutral (NFree x))
-    | Apply e1 e2 -> (match eval e1 d, eval e2 d with
+let rec eval = function
+    | Annoted e _ -> eval e
+    | Bound j     -> get j
+    | Free x      -> constant (return (VNeutral (NFree x)))
+    | Apply e1 e2 -> (fun d -> match eval e1 d, eval e2 d with
                      | Success v1, Success v2 -> vapply v1 v2
                      | Failure f, _           -> throwError f
                      | _, Failure f           -> throwError f)
-    | Inferable e -> eval e d
-    | Lambda e    -> return (VClosure e d)
+    | Inferable e -> eval e
+    | Lambda e    -> VClosure e %> return
 
 and vapply e v =
     match e with 
