@@ -181,7 +181,7 @@ type vterm      : Type -> Type =
     | NApp      : vterm neutral -> vterm value -> vterm neutral
 ```
 
-In this design `vterm` is no an inductive type but a coinductive one (cf. the constructor `VLamb`). If fact, the evaluation
+In this design `vterm` is not an inductive type but a coinductive one (cf. the constructor `VLamb`). If fact, the evaluation
 of a `Lamb` term is given by a reified function in the host langage:
 
 ```haskell
