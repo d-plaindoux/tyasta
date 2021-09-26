@@ -151,6 +151,8 @@ val typeInfer0  : context -> e:(term infer){closed 0 e} -> result typeL
 
 Finally we can remove the pattern matching dedicated to `Bound` term because the term is `closed`.
 
+QED.
+
 ### 4am: Coinductive types
 
 In the original paper, the evaluation of a given term produces a value:
