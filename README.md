@@ -92,7 +92,7 @@ and typeCheck i g e t =
         (match t with
         | Function t t' -> 
             let r  = Free (Local i) in
-            (* This assert is used by the STM solver in order to apply the lemma *)
+            (* This assert is used by the SMT solver in order to apply the lemma *)
             assert (size r = 1); 
             typeCheck (i + 1) ((Local i, HasType t) :: g) (subst 0 r e) t'
         | _ -> 
@@ -121,12 +121,12 @@ Well that's fine but in F* we cannot remove such pattern matching or we have to 
 that such case never occurs!
 
 In order to solve this problem we should observe how the type checker works. Each `Bound`
-term is replaced by a `Free (Local i)`. Based on this we can define a function defining
-when a term is closed or not using the same technic e.g the substitution in order to 
+term is replaced by a `Free (Local i)`. Based on this we can define a function deciding
+if a given term is closed or not using the same technic e.g the substitution in order to 
 eliminate such `Bound` terms. 
 
 ```f*
-val closed  : #a:Type -> nat -> e:term a -> Tot bool (decreases %[size e])
+val closed  : #a:Type -> nat -> e:term a -> Tot bool (decreases (size e))
 
 let rec closed i = function
     | Annoted e t -> closed i e
@@ -139,8 +139,8 @@ let rec closed i = function
                      closed (i+1) (subst 0 r e)
 ```
 
-This `closed` predicate uses the same pattern when managing a `Lambda e` i.e. creates a 
-term for the substitution and eliminates the corresponding `Bound`. Then we can provide
+This `closed` predicate uses the same pattern when managing a `Lambda e` i.e. it creates 
+a term for the substitution and eliminates the corresponding `Bound`. Then we can provide
 refined types in the type checker signatures using such predicate:
 
 ```f*
