@@ -175,7 +175,7 @@ type neutral : Type =
     | Neutral : neutral
 
 type vterm      : Type -> Type =
-    | VLamb     : (vterm value -> vterm value) -> vterm value
+    | VLam     : (vterm value -> vterm value) -> vterm value
     | VNeutral  : vterm neutral -> vterm value
     | NFree     : name -> vterm neutral
     | NApp      : vterm neutral -> vterm value -> vterm neutral
