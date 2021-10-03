@@ -190,7 +190,7 @@ of a `Lamb` term is given by a reified function in the host langage:
 eval↓ (Lam e) d = VLam (λx → eval↓ e (x:d))
 ```
 
-In fact, the function delays the evaluation of the internal term by pushing the captured value above the captured environment. Unfortunately, F* does not have support for coinductive types in this case, we have to replace the 'VLamb' construction with another. This can be done easily by introducing the closing principle that captures the inner element and the current environment.
+In fact, the function delays the evaluation of the internal term by pushing the captured value above the captured environment. Unfortunately, F* does not have support for coinductive types in this case, we have to replace the 'VLamb' construction with another. This can be done easily by introducing the closure that captures the inner element and the current environment.
 
 ```fstar
 type vterm      : Type -> Type =
