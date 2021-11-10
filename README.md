@@ -209,7 +209,7 @@ such operation always terminates and this is clear when we have a look at the im
 
 ```
 
-In fact, the evaluation of `e1` (or `e2`) returns a result with an unknown size. For instance, we can a divergent program like:
+In fact, the evaluation of `e1` (or `e2`) returns a result with an unknown size. For instance, we can have a divergent program like:
 
 ```
 let ref f x = f x
