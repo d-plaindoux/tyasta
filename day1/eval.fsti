@@ -16,4 +16,4 @@ type vterm      : Type -> Type =
 
 and env         : Type = list (vterm value)
 
-val eval        : #a:Type -> e:term a -> env -> Dv (result (vterm value)) (decreases e)
+val eval        : #a:Type -> e:term a -> env -> Tot (result (vterm value))

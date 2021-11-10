@@ -202,7 +202,21 @@ and env         : Type = list (vterm value)
 
 ### 5am: Evaluation and termination
 
-To be continued ...
+It's time now to propose an evaluation for the interpretation of lambda expressions. Unfortunately, we cannot prove that
+such operation always terminates and this is clear when we have a look at the implementation of the evaluation.
+
+```haskell
+
+```
+
+In fact, the evaluation of `e1` (or `e2`) returns a result with an unknown size. For instance, we can a divergent program like:
+
+```
+let ref f x = f x
+```
+
+which never terminates. So the effect linked to the result type is `Div` and this reflect possible infinite computation and
+that's fine.
 
 ### 6am: Evaluation and finite set
 

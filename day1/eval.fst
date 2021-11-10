@@ -11,7 +11,7 @@ let rec get i env =
     | i, _::t -> get (i-1) t
     | _, _ -> throwError "Not found"
 
-val vapply : vterm value -> vterm value -> Dv (result (vterm value))
+val vapply : vterm value -> vterm value -> Tot (result (vterm value))
 
 let rec eval = function
     | Annoted e _ -> eval e
