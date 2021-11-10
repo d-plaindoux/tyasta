@@ -215,7 +215,7 @@ In fact, the evaluation of `e1` (or `e2`) returns a result with an unknown size.
 let ref f x = f x
 ```
 
-which never terminates. So the effect linked to the result type is `Div` and this reflect possible infinite computation and
+which never terminates. So the effect linked to the result type is `Div` and this reflect a possible infinite computation and
 that's fine.
 
 ### 6am: Evaluation and finite set
