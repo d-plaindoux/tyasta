@@ -206,10 +206,10 @@ It's time now to propose an evaluation for the interpretation of lambda expressi
 such operation always terminates and this is clear when we have a look at the implementation of the evaluation.
 
 ```haskell
-
+eval↑ (e :@: e′) d = vapp (eval↑ e d) (eval↓ e′ d)
 ```
 
-In fact, the evaluation of `e1` (or `e2`) returns a result with an unknown size. For instance, we can have a divergent program like:
+In fact, the evaluation of `e` (or `e'`) returns a result with an unknown size. For instance, we can have a divergent program like:
 
 ```
 let ref f x = f x
