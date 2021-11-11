@@ -209,14 +209,14 @@ such operation always terminates and this is clear when we have a look at the im
 eval↑ (e :@: e′) d = vapp (eval↑ e d) (eval↓ e′ d)
 ```
 
-In fact, the evaluation of `e` (or `e'`) returns a result with an unknown size. For instance, we can have a divergent program like:
+In fact, the evaluation of `e` (or `e′`) returns a result with an unknown size. For instance, we can have a divergent program like:
 
 ```
 let rec f x = f x
 ```
 
-which never terminates. So the effect linked to the result type is `Div` and this reflect a possible infinite computation and
-that's fine.
+which never terminates. So the effect linked to the result type is `Dv` (for divergent) and this reflect a possible infinite computation 
+and that's fine.
 
 ### 6am: Evaluation and finite set
 
