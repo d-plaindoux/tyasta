@@ -211,7 +211,7 @@ eval↑ (e :@: e′) d = vapp (eval↑ e d) (eval↓ e′ d)
 
 In fact, the evaluation of `e` (or `e′`) returns a result with an unknown size. For instance, we can have a divergent program like:
 
-```
+```ocaml
 let rec f x = f x
 ```
 
