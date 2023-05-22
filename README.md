@@ -48,7 +48,7 @@ The same design can be applied to the substitution function.
 
 ### 2am: Type checker termination
 
-During this first day the main problem I'm facing is the proof of `typeCheck` and `typeInfer` termination.
+During this first day the main problem I'm facing the proof termination of `typeCheck` and `typeInfer`.
 This is actually normal when we take a closer look at the abstraction type verification code:
 
 ```haskell
